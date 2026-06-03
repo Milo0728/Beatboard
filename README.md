@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BeatBoard
 
-## Getting Started
+Plataforma web de votación y crítica musical para canales de reacciones. Reemplaza el uso de Excel en vivo por un sistema con rankings dinámicos, calificaciones 1–10 (paso 0.5) y comentarios persistentes.
 
-First, run the development server:
+El plan de proyecto detallado vive en [`docs/Plan_Proyecto_BeatBoard.docx`](docs/Plan_Proyecto_BeatBoard.docx).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Stack
+
+- **Frontend / backend:** Next.js 16 (App Router) + React 19 + TypeScript
+- **Estilos:** Tailwind CSS 4
+- **ORM:** Drizzle
+- **BaaS:** Supabase (Postgres + Auth + Realtime + Storage)
+- **Validación:** Zod
+- **Deploy previsto:** Vercel
+
+## Arrancar en local
+
+1. Copia `.env.example` a `.env.local` y rellena las claves de tu proyecto Supabase.
+2. Instala dependencias:
+   ```bash
+   npm install
+   ```
+3. Genera las migraciones de la base de datos y aplícalas:
+   ```bash
+   npm run db:generate
+   npm run db:migrate
+   ```
+4. Arranca el dev server:
+   ```bash
+   npm run dev
+   ```
+
+Abre [http://localhost:3000](http://localhost:3000).
+
+## Scripts
+
+| Script | Acción |
+|--------|--------|
+| `dev` | Next.js en modo desarrollo (Turbopack) |
+| `build` | Build de producción |
+| `start` | Servir el build |
+| `lint` | ESLint |
+| `typecheck` | `tsc --noEmit` |
+| `format` / `format:check` | Prettier |
+| `db:generate` | Genera SQL desde el esquema Drizzle |
+| `db:migrate` | Aplica migraciones pendientes |
+| `db:push` | Sincroniza esquema directamente (dev rápido, sin migraciones) |
+| `db:studio` | Drizzle Studio en `localhost:4983` |
+
+## Estructura
+
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+src/
+├── app/                Rutas (App Router)
+├── db/
+│   ├── schema.ts       Esquema Drizzle (users, artists, albums, songs, ratings, comments)
+│   └── client.ts       Cliente postgres + drizzle
+├── lib/supabase/
+│   ├── browser.ts      Cliente Supabase para componentes cliente
+│   └── server.ts       Cliente Supabase para Server Components y Route Handlers
+└── env.ts              Validación de variables de entorno con Zod
+```
