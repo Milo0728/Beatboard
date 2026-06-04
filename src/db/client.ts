@@ -5,7 +5,6 @@ import { env } from "@/env";
 import * as schema from "./schema";
 
 declare global {
-  // eslint-disable-next-line no-var
   var __beatboard_pg: ReturnType<typeof postgres> | undefined;
 }
 

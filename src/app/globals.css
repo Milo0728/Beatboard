@@ -1,26 +1,119 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+  BeatBoard — brand theme.
+  Type: Poppins (geometric sans). Palette: terracotta (#be5c2b) primary,
+  bright lemon yellow secondary, near-black ink (#040415), white surfaces.
+  Light, crisp and bold.
+*/
+
+@theme {
+  /* Surfaces */
+  --color-paper: #f4f2ed; /* page background (soft neutral) */
+  --color-paper-deep: #ebe8e0; /* recessed / banded areas */
+  --color-surface: #ffffff; /* cards */
+  --color-surface-soft: #f3f0e9; /* insets, inputs */
+
+  /* Ink (brand near-black) */
+  --color-ink: #040415; /* primary text / dark sections */
+  --color-ink-soft: #44444f; /* secondary text */
+  --color-muted: #87858f; /* tertiary / meta */
+
+  /* Lines */
+  --color-line: #e7e3da;
+  --color-line-strong: #d7d2c6;
+
+  /* Primary accent — terracotta */
+  --color-terra: #be5c2b;
+  --color-terra-deep: #97461d;
+  --color-terra-tint: #f6e3d6;
+
+  /* Secondary accent — lemon yellow */
+  --color-lemon: #f0ea5a; /* bright fills / highlights (dark text on top) */
+  --color-gold: #8a7d12; /* readable yellow as TEXT (fame) */
+  --color-gold-tint: #f7f1b4; /* soft yellow wash */
+
+  /* Negative — shame / destructive (deep brick) */
+  --color-clay: #8f3320;
+  --color-clay-tint: #f1ddd4;
+
+  /* Neutral-strong — host / positive (dark slate) */
+  --color-moss: #2b2b38;
+  --color-moss-tint: #e7e6ea;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-poppins);
+  --font-display: var(--font-poppins);
 }
 
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    /* Brand atmosphere: terracotta + lemon washes over a faint paper grain. */
+    background-image:
+      radial-gradient(
+        60rem 42rem at 84% -10%,
+        rgba(190, 92, 43, 0.09),
+        transparent 60%
+      ),
+      radial-gradient(
+        48rem 36rem at -8% 2%,
+        rgba(240, 234, 90, 0.11),
+        transparent 55%
+      ),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    background-attachment: fixed, fixed, fixed;
+  }
+
+  ::selection {
+    background-color: var(--color-terra);
+    color: #fff;
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--color-terra);
+    outline-offset: 2px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  /* Tabular figures for ratings, ranks and vote counts. */
+  .nums {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  /* Subtle entrance used for staggered reveals on the home page. */
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-rise {
+    animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-rise {
+      animation: none;
+    }
+  }
 }

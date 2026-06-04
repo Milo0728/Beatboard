@@ -1,8 +1,10 @@
 "use client";
 
-import { useActionState } from "react";
+import Link from "next/link";
+import { useActionState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
+import { useToast } from "@/components/toast";
 import {
   signInWithGoogle,
   signInWithPassword,
@@ -23,7 +25,19 @@ export function LoginForm() {
     undefined,
   );
 
-  const feedback = signInState ?? signUpState;
+  const toast = useToast();
+
+  useEffect(() => {
+    if (!signInState) return;
+    if (signInState.kind === "error") toast.error(signInState.message);
+    else toast.show({ variant: "info", title: signInState.message, duration: 0 });
+  }, [signInState, toast]);
+
+  useEffect(() => {
+    if (!signUpState) return;
+    if (signUpState.kind === "error") toast.error(signUpState.message);
+    else toast.show({ variant: "info", title: signUpState.message, duration: 0 });
+  }, [signUpState, toast]);
 
   return (
     <div className="flex w-full max-w-sm flex-col gap-6">
@@ -34,32 +48,32 @@ export function LoginForm() {
         <input type="hidden" name="next" value={next} />
         <button
           type="submit"
-          className="inline-flex h-11 items-center justify-center gap-3 rounded-lg border border-zinc-700 bg-zinc-900 text-sm font-medium text-zinc-100 transition hover:border-zinc-600 hover:bg-zinc-800"
+          className="inline-flex h-11 items-center justify-center gap-3 rounded-full border border-line-strong bg-surface text-sm font-medium text-ink-soft transition hover:border-terra/40 hover:text-terra-deep"
         >
           <GoogleIcon />
           Continuar con Google
         </button>
       </form>
 
-      <div className="flex items-center gap-3 text-xs uppercase tracking-widest text-zinc-500">
-        <div className="h-px flex-1 bg-zinc-800" />
+      <div className="flex items-center gap-3 text-xs uppercase tracking-widest text-muted">
+        <div className="h-px flex-1 bg-line" />
         o con email
-        <div className="h-px flex-1 bg-zinc-800" />
+        <div className="h-px flex-1 bg-line" />
       </div>
 
       <form action={signInAction} className="flex flex-col gap-3">
         <input type="hidden" name="next" value={next} />
-        <label className="flex flex-col gap-1.5 text-sm text-zinc-300">
+        <label className="flex flex-col gap-1.5 text-sm text-ink-soft">
           Email
           <input
             type="email"
             name="email"
             required
             autoComplete="email"
-            className="h-11 rounded-lg border border-zinc-800 bg-zinc-950 px-3 text-zinc-100 outline-none transition focus:border-fuchsia-500"
+            className="h-11 rounded-xl border border-line-strong bg-surface-soft px-3 text-ink outline-none transition focus:border-terra"
           />
         </label>
-        <label className="flex flex-col gap-1.5 text-sm text-zinc-300">
+        <label className="flex flex-col gap-1.5 text-sm text-ink-soft">
           Contraseña
           <input
             type="password"
@@ -67,27 +81,24 @@ export function LoginForm() {
             required
             minLength={8}
             autoComplete="current-password"
-            className="h-11 rounded-lg border border-zinc-800 bg-zinc-950 px-3 text-zinc-100 outline-none transition focus:border-fuchsia-500"
+            className="h-11 rounded-xl border border-line-strong bg-surface-soft px-3 text-ink outline-none transition focus:border-terra"
           />
         </label>
 
-        {feedback ? (
-          <p
-            className={
-              feedback.kind === "error"
-                ? "rounded-md border border-red-900/60 bg-red-950/40 px-3 py-2 text-sm text-red-300"
-                : "rounded-md border border-emerald-900/60 bg-emerald-950/30 px-3 py-2 text-sm text-emerald-200"
-            }
+        <div className="-mt-1 text-right">
+          <Link
+            href="/forgot-password"
+            className="text-xs font-medium text-ink-soft transition hover:text-terra-deep"
           >
-            {feedback.message}
-          </p>
-        ) : null}
+            ¿Olvidaste tu contraseña?
+          </Link>
+        </div>
 
         <div className="flex gap-2">
           <button
             type="submit"
             disabled={signInPending}
-            className="inline-flex h-11 flex-1 items-center justify-center rounded-lg bg-zinc-100 text-sm font-semibold text-zinc-950 transition hover:bg-white disabled:opacity-60"
+            className="inline-flex h-11 flex-1 items-center justify-center rounded-full bg-terra text-sm font-semibold text-paper shadow-[0_2px_0_0_var(--color-terra-deep)] transition hover:bg-terra-deep disabled:opacity-60"
           >
             {signInPending ? "Entrando..." : "Iniciar sesión"}
           </button>
@@ -95,7 +106,7 @@ export function LoginForm() {
             type="submit"
             formAction={signUpAction}
             disabled={signUpPending}
-            className="inline-flex h-11 flex-1 items-center justify-center rounded-lg border border-zinc-700 bg-zinc-900 text-sm font-semibold text-zinc-100 transition hover:border-zinc-600 hover:bg-zinc-800 disabled:opacity-60"
+            className="inline-flex h-11 flex-1 items-center justify-center rounded-full border border-line-strong bg-surface text-sm font-semibold text-ink-soft transition hover:border-terra/40 hover:text-terra-deep disabled:opacity-60"
           >
             {signUpPending ? "Creando..." : "Crear cuenta"}
           </button>

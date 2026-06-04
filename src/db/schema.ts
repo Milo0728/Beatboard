@@ -60,6 +60,12 @@ export const albums = pgTable("albums", {
   /** Aggregated by trigger from ratings (rating_type='song'). */
   avgRating: decimal("avg_rating", { precision: 3, scale: 1 }),
   ratingCount: integer("rating_count").notNull().default(0),
+  /**
+   * Aggregated by trigger from ratings (rating_type='album_manual') — the
+   * audience's overall album score, independent of the song-derived average.
+   */
+  manualAvgRating: decimal("manual_avg_rating", { precision: 3, scale: 1 }),
+  manualRatingCount: integer("manual_rating_count").notNull().default(0),
 });
 
 export const songs = pgTable(

@@ -1,23 +1,32 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Poppins } from "next/font/google";
 
+import { ConfirmProvider } from "@/components/confirm-dialog";
 import { SiteNav } from "@/components/site-nav";
+import { ToastProvider } from "@/components/toast";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "BeatBoard — Música, calificada en vivo",
   description:
     "Plataforma de votación y crítica musical para canales de reacciones. Rankings dinámicos, reseñas y calificaciones en tiempo real.",
+  openGraph: {
+    title: "BeatBoard — Música, calificada en vivo",
+    description:
+      "Rankings dinámicos, reseñas y calificaciones para canales de reacciones musicales.",
+    siteName: "BeatBoard",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -26,13 +35,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col bg-zinc-950 text-zinc-100">
-        <SiteNav />
-        {children}
+    <html lang="es" className={`${poppins.variable} h-full antialiased`}>
+      <body className="flex min-h-full flex-col">
+        <ToastProvider>
+          <ConfirmProvider>
+            <SiteNav />
+            {children}
+          </ConfirmProvider>
+        </ToastProvider>
       </body>
     </html>
   );

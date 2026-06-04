@@ -2,9 +2,13 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { updateSession } from "@/lib/supabase/middleware";
 
-const PROTECTED_PREFIXES = ["/admin", "/live", "/my-ratings"];
+const PROTECTED_PREFIXES = ["/admin", "/live", "/my-ratings", "/settings"];
 
 export async function proxy(request: NextRequest) {
+  // Expose the pathname to Server Components via a request header so they
+  // can render path-aware UI (e.g. hide the global nav on the OBS overlay).
+  request.headers.set("x-pathname", request.nextUrl.pathname);
+
   const { response, user } = await updateSession(request);
 
   const pathname = request.nextUrl.pathname;
